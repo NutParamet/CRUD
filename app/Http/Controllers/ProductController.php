@@ -15,7 +15,7 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function visual()
+    public function chart()
     {
         $topOrders = OrderDetail::select('product_id')
             ->selectRaw('SUM(quantity) as order_count')  // Calculate the total quantity for each product
@@ -24,7 +24,7 @@ class ProductController extends Controller
             ->take(10) // Limit to top 10 products
             ->get();
 
-        return Inertia::render('Product/Visual', [
+        return Inertia::render('Product/Chart', [
             'topOrders' => $topOrders,
     ]);
     }

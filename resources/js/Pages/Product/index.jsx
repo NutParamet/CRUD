@@ -57,7 +57,7 @@ export default function Index({ table, tableNo }) {
                         <button onClick={() => handleTableChange(4)}>
                             Customer
                         </button>
-                        <button onClick={() => router.get('/products/visual')}>
+                        <button onClick={() => router.get('/products/chart')}>
                             Chart Order
                         </button>
                     </div>
