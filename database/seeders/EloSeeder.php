@@ -29,14 +29,14 @@ class EloSeeder extends Seeder
         Course::factory(5)->create();
         Register::factory(20)->create();
 
-        ProdCustomer::factory(5)->create();
-        Product::factory(10)->create();
-        Order::factory(5)->create();
-        OrderDetail::factory(10)->create();
+        ProdCustomer::factory(100)->create();
+        Product::factory(100)->create();
+        Order::factory(100)->create();
+        OrderDetail::factory(100)->create();
 
-        BookCustomer::factory(5)->create();
-        RoomType::factory(3)->create();
-        Room::factory(15)->create();
-        Booking::factory(5)->create();
+        BookCustomer::factory(100)->create();
+        RoomType::factory(5)->create();
+        Room::factory(10)->create();
+        Booking::factory(150)->create();
     }
 }
