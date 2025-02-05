@@ -19,7 +19,9 @@ class ProductFactory extends Factory
     {
         return [
             'product_code' => $this->faker->unique()->lexify('P???-????'),  // สร้าง product code เช่น PABC-1234
-            'product_name' => $this->faker->word(),  // ชื่อสินค้า
+            'product_name' => $this->faker->randomElement([
+                'smartphone', 'laptop', 'headphones', 'gaming mouse', 'mechanical keyboard'
+            ]),
             'price' => $this->faker->numberBetween(100, 10000),  // ราคา
             'stock' => $this->faker->numberBetween(1, 100),  // จำนวนสินค้า
         ];
