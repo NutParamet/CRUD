@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
 
-export default function Index({ table, tableNo }) {
+export default function Index({ table, tableNo, sortBy, sortOrder }) {
     const [selectedTable, setSelectedTable] = useState(tableNo || 1);
+    const [sorting, setSorting] = useState({ column: sortBy || 'id', order: sortOrder || 'asc' });
 
     const columns = {
         1: [
@@ -31,13 +32,19 @@ export default function Index({ table, tableNo }) {
         ]
     };
 
-    const handlePageChange = (url, selectedTable) => {
-        router.get(url, { selectedTable });
+    const handlePageChange = (url) => {
+        router.get(url, { selectedTable, sortBy: sorting.column, sortOrder: sorting.order });
     };
 
     const handleTableChange = (newTable) => {
         setSelectedTable(newTable);
-        handlePageChange('/products', newTable);
+        router.get('/products', { selectedTable: newTable, sortBy: sorting.column, sortOrder: sorting.order });
+    };
+
+    const handleSort = (column) => {
+        const newOrder = sorting.column === column && sorting.order === 'asc' ? 'desc' : 'asc';
+        setSorting({ column, order: newOrder });
+        router.get('/products', { selectedTable, sortBy: column, sortOrder: newOrder });
     };
 
     const handleCreate = () => {
@@ -76,7 +83,13 @@ export default function Index({ table, tableNo }) {
                 <thead className="bg-blue-500 text-white">
                     <tr>
                         {columns[selectedTable].map((column) => (
-                            <th key={column.key} className="py-2 px-4 border-b border-gray-300">{column.label}</th>
+                            <th
+                                key={column.key}
+                                className="py-2 px-4 border-b border-gray-300 cursor-pointer"
+                                onClick={() => handleSort(column.key)}
+                            >
+                                {column.label} {sorting.column === column.key ? (sorting.order === 'asc' ? '↑' : '↓') : ''}
+                            </th>
                         ))}
                         <th className="py-2 px-4 border-b border-gray-300">Actions</th>
                     </tr>
@@ -89,7 +102,6 @@ export default function Index({ table, tableNo }) {
                                     {item[column.key]}
                                 </td>
                             ))}
-
                             <td className="py-2 px-4 border-b border-gray-300 text-center space-x-2">
                                 <button onClick={() => handleEdit(item.id)} className="px-2 py-1 bg-yellow-500 text-white rounded">
                                     Edit
@@ -105,7 +117,7 @@ export default function Index({ table, tableNo }) {
 
             <div className="mt-8 flex justify-center items-center space-x-4">
                 <button
-                    onClick={() => handlePageChange(`${table.prev_page_url}`, selectedTable)}
+                    onClick={() => handlePageChange(table.prev_page_url)}
                     disabled={!table.prev_page_url}
                     className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
                 >
@@ -113,7 +125,7 @@ export default function Index({ table, tableNo }) {
                 </button>
                 <span className="text-lg">Page {table.current_page} of {table.last_page}</span>
                 <button
-                    onClick={() => handlePageChange(`${table.next_page_url}`, selectedTable)}
+                    onClick={() => handlePageChange(table.next_page_url)}
                     disabled={!table.next_page_url}
                     className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
                 >

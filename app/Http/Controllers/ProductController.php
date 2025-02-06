@@ -31,23 +31,30 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $selectedTable = $request->input('selectedTable', 1);
-        $table = Product::paginate(10);
+        $sortBy = $request->input('sortBy', 'id');
+        $sortOrder = $request->input('sortOrder', 'asc');
 
-        if ($selectedTable == 1) {
-            $table = Product::paginate(10);
-        } else if ($selectedTable == 2) {
-            $table = Order::paginate(10);
-        } else if ($selectedTable == 3) {
-            $table = OrderDetail::paginate(10);
-        } else if ($selectedTable == 4) {
-            $table = ProdCustomer::paginate(10);
+        $models = [
+            1 => Product::class,
+            2 => Order::class,
+            3 => OrderDetail::class,
+            4 => ProdCustomer::class,
+        ];
+
+        if (!isset($models[$selectedTable])) {
+            return redirect()->route('products.index');
         }
 
-        return Inertia::render('Product/Index', [
-            'table' => $table,
+        $tableData = $models[$selectedTable]::orderBy($sortBy, $sortOrder)->paginate(10);
+
+        return inertia('Product/Index', [
+            'table' => $tableData,
             'tableNo' => $selectedTable,
+            'sortBy' => $sortBy,
+            'sortOrder' => $sortOrder,
         ]);
     }
+
 
     public function create(Request $request, $table)
     {
